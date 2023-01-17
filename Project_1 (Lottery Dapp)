@@ -1,0 +1,82 @@
+//SPDX-License-Identifier: GPL 3.0
+pragma solidity <= 0.6.0 < 0.9.0;
+contract lottery
+{
+   address public manager;
+   address payable[] public participants; 
+   constructor() public
+   {
+       manager=msg.sender;
+   }
+    receive() external payable {
+       require(msg.value==0.001 ether);
+       participants.push(payable(msg.sender));
+   }
+   function company_expnse() public payable returns(uint){  
+        require(msg.sender==manager);  
+      address payable company=0x1B742a0a97D4F8a3158496425Bc1e24d2EE5c631;
+      uint amnt=(address(this).balance)*10/100;     
+      company.transfer(amnt);
+   }
+   function get_company_expense() public view returns(uint){
+      return address(0x1B742a0a97D4F8a3158496425Bc1e24d2EE5c631).balance;
+   }
+   function getbalance() public view returns(uint)
+   {
+       require(msg.sender==manager);
+       return address(this).balance;
+   }
+   function get_prize() public view returns(uint){
+       require(msg.sender==manager);
+       uint prize = address(this).balance /2;
+       return prize;
+   }
+   function random_winner() public view returns(uint){
+      return uint(keccak256(abi.encodePacked(participants.length)));
+   }
+   function selectWinner() public returns(address){
+       require(msg.sender==manager);
+       require(participants.length>=5);
+       uint r=random_winner();
+       address payable winner;
+       uint index = r % participants.length;
+       winner=participants[index];
+       winner.transfer(get_prize());
+       return winner; 
+   }
+   function prize_of_FR() public view returns(uint){
+       uint F_R = address(this).balance / 2;
+       return F_R;
+   }
+   function First_RUP() public view returns(uint){
+        return uint(keccak256(abi.encodePacked(participants.length)));
+    } 
+      function select_rup() public returns(address){
+       require(msg.sender==manager);
+       require(participants.length>=5);
+       uint s=First_RUP();
+       address payable firstRunnerup;
+       uint i = s % participants.length;
+       firstRunnerup=participants[i];
+       firstRunnerup.transfer(prize_of_FR()); 
+   }
+   function prize_of_SR() public view returns(uint){
+       return address(this).balance;
+   }
+   function sec_RUP() public view returns(uint){
+        return uint(keccak256(abi.encodePacked(participants.length)));
+    } 
+      function select_sup() public returns(address){
+       require(msg.sender==manager);
+       require(participants.length>=5);
+       uint q=sec_RUP();
+       address payable SR;
+       uint p = q % participants.length;
+       SR=participants[p];
+       SR.transfer(prize_of_SR());
+       participants=new address payable[](0); 
+   }
+
+
+}
+
